@@ -1,6 +1,8 @@
 import contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import { createContactSchema } from "../schemas/contactsSchemas.js";
+import validateBody from "../helpers/validateBody.js";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res, next) => {
   const data = await contactsService.listContacts();
@@ -24,9 +26,6 @@ export const deleteContactControllers = ctrlWrapper(async (req, res, next) => {
 
 export const createContactControllers = ctrlWrapper(async (req, res, next) => {
   const { name, email, phone } = req.body;
-  if (!name || !email || !phone) {
-    throw HttpError(400, "Missing required fields");
-  }
   const data = await contactsService.addContact(name, email, phone);
   res.status(201).json(data);
 });
