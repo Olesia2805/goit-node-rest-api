@@ -12,11 +12,9 @@ export const getAllContactsControllers = ctrlWrapper(async (req, res, next) => {
   res.json(data);
 });
 
-export const getOneContactControllers = ctrlWrapper(async (req, res, next) => {
-  if (!data) {
-    throw HttpError(404, "Contact not found");
-  }
-});
+export const getOneContactControllers = ctrlWrapper(
+  async (req, res, next) => {}
+);
 
 export const deleteContactControllers = ctrlWrapper(async (req, res, next) => {
   if (!data) {
@@ -31,7 +29,12 @@ export const createContactControllers = ctrlWrapper(async (req, res, next) => {
 });
 
 export const updateContactControllers = ctrlWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  const { name, email, phone } = req.body;
+  const data = await contactsService.updateContact(id, name, email, phone);
   if (!data) {
-    throw HttpError(404, "Contact not found");
+    throw HttpError(404, "Contact cannot be updated");
   }
+
+  res.json(data);
 });
