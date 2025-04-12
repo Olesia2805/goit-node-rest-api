@@ -1,51 +1,33 @@
 import contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
-export const getAllContactsControllers = async (req, res, next) => {
-  try {
-    const data = await contactsService.listContacts();
-    if (!data) {
-      throw HttpError(404, "No contacts found");
-    }
-    res.json(data);
-  } catch (error) {
-    next(error);
+export const getAllContactsControllers = ctrlWrapper(async (req, res, next) => {
+  const data = await contactsService.listContacts();
+  if (!data) {
+    throw HttpError(404, "Contacts not found");
   }
-};
+  res.json(data);
+});
 
-export const getOneContactControllers = async (req, res, next) => {
-  try {
-    if (!data) {
-      throw HttpError(404, "Contact not found");
-    }
-  } catch (error) {
-    next(error);
+export const getOneContactControllers = ctrlWrapper(async (req, res, next) => {
+  if (!data) {
+    throw HttpError(404, "Contact not found");
   }
-};
+});
 
-export const deleteContactControllers = async (req, res, next) => {
-  try {
-    if (!data) {
-      throw HttpError(404, "Contact not found");
-    }
-  } catch (error) {
-    next(error);
+export const deleteContactControllers = ctrlWrapper(async (req, res, next) => {
+  if (!data) {
+    throw HttpError(404, "Contact not found");
   }
-};
+});
 
-export const createContactControllers = async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
-  }
-};
+export const createContactControllers = ctrlWrapper(
+  async (req, res, next) => {}
+);
 
-export const updateContactControllers = async (req, res, next) => {
-  try {
-    if (!data) {
-      throw HttpError(404, "Contact not found");
-    }
-  } catch (error) {
-    next(error);
+export const updateContactControllers = ctrlWrapper(async (req, res, next) => {
+  if (!data) {
+    throw HttpError(404, "Contact not found");
   }
-};
+});

@@ -13,7 +13,6 @@ async function listContacts() {
     const parsed = JSON.parse(allContacts);
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.error("Error reading contacts file:", error.message);
     return null;
   }
 }
@@ -43,7 +42,6 @@ async function removeContact(contactId) {
 
 async function addContact(name, email, phone) {
   if (!name || !email || !phone) {
-    console.error("All fields are required!");
     return null;
   }
 
