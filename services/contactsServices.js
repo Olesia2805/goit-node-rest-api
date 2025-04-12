@@ -61,4 +61,37 @@ async function addContact(name, email, phone) {
   return newContact;
 }
 
-export default { listContacts, getContactById, removeContact, addContact };
+async function updateContact(contactId, name, email, phone) {
+  if (!name && !email && !phone) {
+    return null;
+  }
+
+  const allContacts = await listContacts();
+
+  const index = allContacts.findIndex((item) => item.id === contactId);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedContactFields = {
+    ...allContacts[index],
+    ...(name && { name }),
+    ...(email && { email }),
+    ...(phone && { phone }),
+  };
+
+  allContacts[index] = updatedContactFields;
+
+  await updateContactsData(allContacts);
+
+  return updatedContactFields;
+}
+
+export default {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
+};
