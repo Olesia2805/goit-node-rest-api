@@ -22,9 +22,12 @@ export const getOneContactControllers = ctrlWrapper(async (req, res, next) => {
 });
 
 export const deleteContactControllers = ctrlWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  const data = await contactsService.removeContact(id);
   if (!data) {
     throw HttpError(404, `Contact with id=${id} not found`);
   }
+  res.json({ message: `Contact with id=${id} deleted` });
 });
 
 export const createContactControllers = ctrlWrapper(async (req, res, next) => {
