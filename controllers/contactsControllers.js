@@ -1,11 +1,51 @@
 import contactsService from "../services/contactsServices.js";
+import HttpError from "../helpers/HttpError.js";
 
-export const getAllContacts = (req, res) => {};
+export const getAllContactsControllers = async (req, res, next) => {
+  try {
+    const data = await contactsService.listContacts();
+    if (!data) {
+      throw HttpError(404, "No contacts found");
+    }
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const getOneContact = (req, res) => {};
+export const getOneContactControllers = async (req, res, next) => {
+  try {
+    if (!data) {
+      throw HttpError(404, "Contact not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const deleteContact = (req, res) => {};
+export const deleteContactControllers = async (req, res, next) => {
+  try {
+    if (!data) {
+      throw HttpError(404, "Contact not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const createContact = (req, res) => {};
+export const createContactControllers = async (req, res, next) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const updateContact = (req, res) => {};
+export const updateContactControllers = async (req, res, next) => {
+  try {
+    if (!data) {
+      throw HttpError(404, "Contact not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
