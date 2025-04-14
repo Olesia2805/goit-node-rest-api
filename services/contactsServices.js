@@ -1,97 +1,48 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { nanoid } from "nanoid";
+import Contact from "../db/models/Contact.js";
 
-const contactsPath = path.resolve("db", "contacts.json");
-const updateContactsData = (contacts) =>
-  fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+export const listContacts = async () => {
+  const contacts = await Contact.findAll();
+  if (!contacts) return null;
 
-async function listContacts() {
-  try {
-    const allContacts = await fs.readFile(contactsPath, "utf-8");
+  return contacts;
+};
 
-    const parsed = JSON.parse(allContacts);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    return null;
-  }
-}
+export const getContactById = async (contactId) => {
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
 
-async function getContactById(contactId) {
-  const allContacts = await listContacts();
+  return contact;
+};
 
-  const contact = allContacts.find((item) => item.id === contactId);
+export const removeContact = async (contactId) => {
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
 
-  return contact || null;
-}
+  await contact.destroy();
 
-async function removeContact(contactId) {
-  const allContacts = await listContacts();
-  const index = allContacts.findIndex((item) => item.id === contactId);
+  return contact;
+};
 
-  if (index === -1) {
-    return null;
-  }
-
-  const [removedContact] = allContacts.splice(index, 1);
-
-  await updateContactsData(allContacts);
-
-  return removedContact;
-}
-
-async function addContact(name, email, phone) {
+export const addContact = async (name, email, phone) => {
   if (!name || !email || !phone) {
     return null;
   }
-
-  const allContacts = await listContacts();
-
-  const newContact = {
-    id: nanoid(),
-    name,
-    email,
-    phone,
-  };
-
-  allContacts.push(newContact);
-
-  await updateContactsData(allContacts);
-
-  return newContact;
-}
-
-async function updateContact(contactId, name, email, phone) {
-  if (!name && !email && !phone) {
+  if (await Contact.findOne({ where: { email } })) {
     return null;
   }
 
-  const allContacts = await listContacts();
+  return await Contact.create({ name, email, phone });
+};
 
-  const index = allContacts.findIndex((item) => item.id === contactId);
+export const updateContact = async (contactId, name, email, phone) => {
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
 
-  if (index === -1) {
-    return null;
-  }
-
-  const updatedContactFields = {
-    ...allContacts[index],
+  const updatedContact = await contact.update({
     ...(name && { name }),
     ...(email && { email }),
     ...(phone && { phone }),
-  };
+  });
 
-  allContacts[index] = updatedContactFields;
-
-  await updateContactsData(allContacts);
-
-  return updatedContactFields;
-}
-
-export default {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
+  return updatedContact;
 };
