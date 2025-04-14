@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-
-dotenv.config();
+import "dotenv/config";
 
 const sequelize = new Sequelize({
   dialect: process.env.DB_DIALECT,
@@ -14,12 +12,5 @@ const sequelize = new Sequelize({
     ssl: true,
   },
 });
-
-try {
-  await sequelize.authenticate();
-  console.log("Connection to the database has been established successfully.");
-} catch (error) {
-  console.error("Unable to connect to the database:", error);
-}
 
 export default sequelize;
