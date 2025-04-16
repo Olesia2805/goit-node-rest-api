@@ -1,8 +1,6 @@
 import * as contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import { createContactSchema } from "../schemas/contactsSchemas.js";
-import validateBody from "../helpers/validateBody.js";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
   const data = await contactsService.listContacts();
@@ -43,6 +41,19 @@ export const updateContactControllers = ctrlWrapper(async (req, res) => {
     throw HttpError(400, "Body must have at least one field");
   }
   const data = await contactsService.updateContact(id, name, email, phone);
+  if (!data) {
+    throw HttpError(404, "Not found");
+  }
+  res.json(data);
+});
+
+export const updateStatusContactControllers = ctrlWrapper(async (req, res) => {
+  const { id } = req.params;
+  const { favorite } = req.body;
+  if (favorite === undefined) {
+    throw HttpError(400, "missing field favorite");
+  }
+  const data = await contactsService.updateStatusContact(id, { favorite });
   if (!data) {
     throw HttpError(404, "Not found");
   }

@@ -46,3 +46,11 @@ export const updateContact = async (contactId, name, email, phone) => {
 
   return updatedContact;
 };
+
+export const updateStatusContact = async (contactId, body) => {
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
+  const updatedContact = await contact.update({ favorite: body.favorite });
+
+  return updatedContact;
+};
