@@ -1,6 +1,6 @@
 # goit-node-rest-api
 
-A simple REST API built with Node.js and Express for managing contacts. This project includes CRUD operations for contacts and uses tools like Joi for validation, Morgan for logging, and Nodemon for development.
+A RESTful API built with Node.js and Express for managing contacts. The project uses Sequelize for database interaction and includes features like input validation, error handling, and modular architecture.
 
 ---
 
@@ -17,6 +17,7 @@ A simple REST API built with Node.js and Express for managing contacts. This pro
 ## Features
 - Create, read, update, and delete contacts.
 - Input validation using Joi.
+- Database integration with Sequelize and PostgreSQL.
 - Error handling with custom HTTP error helpers.
 - Modular and scalable project structure.
 
@@ -39,6 +40,11 @@ A simple REST API built with Node.js and Express for managing contacts. This pro
     npm install
     ```
 
+4. Create a `.env` file in the root directory and set up your environment variables. You can use the [`.env.example`](.env.example) file as a reference.
+    ```bash
+    cp .env.example .env
+    ```
+
 ## Usage
 
 - Start the server:
@@ -50,7 +56,6 @@ A simple REST API built with Node.js and Express for managing contacts. This pro
 
 ## API Endpoints
 
-
 Method | Endpoint | Description
 --- | --- | ---
 GET | `/api/contacts` | Get all contacts
@@ -58,6 +63,7 @@ GET | `/api/contacts/:id` | Get a contact by ID
 POST | `/api/contacts` | Create a new contact
 PUT | `/api/contacts/:id` | Update a contact by ID
 DELETE | `/api/contacts/:id` | Delete a contact by ID
+PATCH | `/api/contacts/:id/favorite` | Update favorite status of a contact by ID
 
 ### Examples
 - **Get all contacts**:
@@ -90,6 +96,14 @@ DELETE | `/api/contacts/:id` | Delete a contact by ID
     ```bash
     curl -X DELETE http://localhost:3000/api/contacts/rsKkOQUi80UsgVPCcLZZW
     ```
+-  **Update favorite status**:
+    ```bash
+    curl -X PATCH http://localhost:3000/api/contacts/rsKkOQUi80UsgVPCcLZZW/favorite \
+    -H "Content-Type: application/json" \
+    -d '{
+        "favorite": true
+    }'
+    ```
 
 ## Technologies Used
 - `Node.js`: JavaScript runtime for server-side development.
@@ -98,3 +112,6 @@ DELETE | `/api/contacts/:id` | Delete a contact by ID
 - `Morgan`: HTTP request logger middleware for Node.js.
 - `Nodemon`: Development tool for auto-restarting the server on file changes.
 - `Nanoid`: Unique ID generator for creating random IDs.
+- `Sequelize`: Promise-based Node.js ORM for PostgreSQL.
+- `PostgreSQL`: Relational database management system.
+- `cors`: Middleware for enabling CORS (Cross-Origin Resource Sharing).
