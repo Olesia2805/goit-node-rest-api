@@ -6,6 +6,8 @@ import {
   phoneValidationMessage,
   emailValidationMessage,
   nameValidationMessage,
+  emailNotEmptyMessage,
+  phoneNotEmptyMessage,
 } from "../../constants/contacts.js";
 
 const Contact = sequelize.define("contact", {
@@ -30,13 +32,15 @@ const Contact = sequelize.define("contact", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       isEmail: {
         msg: emailValidationMessage,
       },
       notNull: {
         msg: "Email is required",
+      },
+      notEmpty: {
+        msg: emailNotEmptyMessage,
       },
     },
   },
@@ -48,7 +52,7 @@ const Contact = sequelize.define("contact", {
         msg: "Phone is required",
       },
       notEmpty: {
-        msg: "Phone cannot be empty",
+        msg: phoneNotEmptyMessage,
       },
       is: {
         args: phoneRegex,

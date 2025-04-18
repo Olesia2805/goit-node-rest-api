@@ -30,13 +30,7 @@ export const deleteContactControllers = ctrlWrapper(async (req, res) => {
 
 export const createContactControllers = ctrlWrapper(async (req, res) => {
   const { name, email, phone } = req.body;
-  if (!name || !email || !phone) {
-    throw HttpError(400, "missing required name field");
-  }
   const data = await contactsService.addContact(name, email, phone);
-  if (!data) {
-    throw HttpError(409, "Email in use");
-  }
   res.status(201).json(data);
 });
 

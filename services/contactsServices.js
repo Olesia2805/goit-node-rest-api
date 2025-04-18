@@ -27,9 +27,6 @@ export const addContact = async (name, email, phone) => {
   if (!name || !email || !phone) {
     return null;
   }
-  if (await Contact.findOne({ where: { email } })) {
-    return null;
-  }
 
   return await Contact.create({ name, email, phone });
 };
