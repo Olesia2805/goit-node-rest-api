@@ -15,7 +15,7 @@ export const getContactById = async (contactId) => {
 };
 
 export const removeContact = async (contactId) => {
-  const contact = await Contact.findByPk(contactId);
+  const contact = await getContactById(contactId);
   if (!contact) return null;
 
   await contact.destroy();
@@ -35,7 +35,7 @@ export const addContact = async (name, email, phone) => {
 };
 
 export const updateContact = async (contactId, name, email, phone) => {
-  const contact = await Contact.findByPk(contactId);
+  const contact = await getContactById(contactId);
   if (!contact) return null;
 
   const updatedContact = await contact.update({
@@ -48,7 +48,7 @@ export const updateContact = async (contactId, name, email, phone) => {
 };
 
 export const updateStatusContact = async (contactId, body) => {
-  const contact = await Contact.findByPk(contactId);
+  const contact = await getContactById(contactId);
   if (!contact) return null;
   const updatedContact = await contact.update({ favorite: body.favorite });
 
