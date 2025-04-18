@@ -8,7 +8,7 @@ import {
   nameValidationMessage,
   emailNotEmptyMessage,
   phoneNotEmptyMessage,
-} from "../../constants/contacts.js";
+} from "../../constants/messages.js";
 
 const Contact = sequelize.define("contact", {
   id: {
@@ -70,6 +70,6 @@ const Contact = sequelize.define("contact", {
   },
 });
 
-// Contact.sync();
+// Contact.sync({ force: false });
 
 export default Contact;

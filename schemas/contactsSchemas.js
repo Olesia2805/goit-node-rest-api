@@ -11,7 +11,7 @@ import {
   emailIsRequiredMessage,
   favoriteValidationMessage,
   favoriteIsRequiredMessage,
-} from "../constants/contacts.js";
+} from "../constants/messages.js";
 
 export const createContactSchema = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({

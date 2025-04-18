@@ -21,3 +21,7 @@ export const passwordEmptyMessage = "Password cannot be empty";
 export const passwordIsRequiredMessage = "Password is required";
 
 export const subscriptionOptions = ["starter", "pro", "business"];
+
+export const conflictExistsEmailMessageInUse =
+  "Conflict: Another user already uses this email";
+export const notFoundMessage = "Not found";

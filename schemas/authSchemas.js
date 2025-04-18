@@ -6,8 +6,7 @@ import {
   passwordEmptyMessage,
   passwordIsRequiredMessage,
   subscriptionOptions,
-} from "../constants/contacts.js";
-import e from "express";
+} from "../constants/messages.js";
 
 export const authRegisterSchema = Joi.object({
   email: Joi.string().email().required().messages({

@@ -5,7 +5,7 @@ import {
   emailIsRequiredMessage,
   passwordIsRequiredMessage,
   subscriptionOptions,
-} from "../../constants/contacts.js";
+} from "../../constants/messages.js";
 
 const User = sequelize.define("user", {
   email: {
@@ -44,3 +44,7 @@ const User = sequelize.define("user", {
     allowNull: true,
   },
 });
+
+// User.sync({ force: false });
+
+export default User;

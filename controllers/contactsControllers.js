@@ -1,6 +1,7 @@
 import * as contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
+import { notFoundMessage } from "../constants/messages.js";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
   const data = await contactsService.listContacts();
@@ -14,7 +15,7 @@ export const getOneContactControllers = ctrlWrapper(async (req, res) => {
   const { id } = req.params;
   const data = await contactsService.getContactById(id);
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
@@ -23,7 +24,7 @@ export const deleteContactControllers = ctrlWrapper(async (req, res) => {
   const { id } = req.params;
   const data = await contactsService.removeContact(id);
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
@@ -42,7 +43,7 @@ export const updateContactControllers = ctrlWrapper(async (req, res) => {
   }
   const data = await contactsService.updateContact(id, name, email, phone);
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
@@ -55,7 +56,7 @@ export const updateStatusContactControllers = ctrlWrapper(async (req, res) => {
   }
   const data = await contactsService.updateStatusContact(id, { favorite });
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
