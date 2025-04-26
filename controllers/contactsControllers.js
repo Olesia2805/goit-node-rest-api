@@ -4,7 +4,8 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { notFoundMessage } from "../constants/messages.js";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
-  const data = await contactsService.listContacts();
+  const { id: owner } = req.user;
+  const data = await contactsService.listContacts(owner);
   if (!data) {
     throw HttpError(404, "Contacts not found");
   }
@@ -12,8 +13,9 @@ export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
 });
 
 export const getOneContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
-  const data = await contactsService.getContactById(id);
+  const data = await contactsService.getContactById(id, owner);
   if (!data) {
     throw HttpError(404, notFoundMessage);
   }
@@ -21,8 +23,9 @@ export const getOneContactControllers = ctrlWrapper(async (req, res) => {
 });
 
 export const deleteContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
-  const data = await contactsService.removeContact(id);
+  const data = await contactsService.removeContact(id, owner);
   if (!data) {
     throw HttpError(404, notFoundMessage);
   }
@@ -30,18 +33,26 @@ export const deleteContactControllers = ctrlWrapper(async (req, res) => {
 });
 
 export const createContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { name, email, phone } = req.body;
-  const data = await contactsService.addContact(name, email, phone);
+  const data = await contactsService.addContact(name, email, phone, owner);
   res.status(201).json(data);
 });
 
 export const updateContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
   const { name, email, phone } = req.body;
   if (!name && !email && !phone) {
     throw HttpError(400, "Body must have at least one field");
   }
-  const data = await contactsService.updateContact(id, name, email, phone);
+  const data = await contactsService.updateContact(
+    id,
+    name,
+    email,
+    phone,
+    owner
+  );
   if (!data) {
     throw HttpError(404, notFoundMessage);
   }
@@ -49,12 +60,17 @@ export const updateContactControllers = ctrlWrapper(async (req, res) => {
 });
 
 export const updateStatusContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
   const { favorite } = req.body;
   if (favorite === undefined) {
     throw HttpError(400, "missing field favorite");
   }
-  const data = await contactsService.updateStatusContact(id, { favorite });
+  const data = await contactsService.updateStatusContact(
+    id,
+    { favorite },
+    owner
+  );
   if (!data) {
     throw HttpError(404, notFoundMessage);
   }

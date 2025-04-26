@@ -64,12 +64,12 @@ const Contact = sequelize.define("contact", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  // owner: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  // },
+  owner: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
-// Contact.sync({ force: false });
+// Contact.sync({ force: true });
 
 export default Contact;

@@ -1,21 +1,34 @@
 import Contact from "../db/models/Contact.js";
 
-export const listContacts = async () => {
-  const contacts = await Contact.findAll();
-  if (!contacts) return null;
+export const listContacts = async (ownerId) => {
+  const contacts = await Contact.findAll({
+    where: {
+      owner: ownerId,
+    },
+  });
 
+  if (!contacts) return null;
   return contacts;
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await Contact.findByPk(contactId);
+export const getContactById = async (contactId, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await Contact.findOne({
+    where: {
+      id: contactId,
+      owner: ownerId,
+    },
+  });
   if (!contact) return null;
 
   return contact;
 };
 
-export const removeContact = async (contactId) => {
-  const contact = await getContactById(contactId);
+export const removeContact = async (contactId, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await getContactById(contactId, ownerId);
   if (!contact) return null;
 
   await contact.destroy();
@@ -23,16 +36,20 @@ export const removeContact = async (contactId) => {
   return contact;
 };
 
-export const addContact = async (name, email, phone) => {
+export const addContact = async (name, email, phone, ownerId) => {
+  if (!ownerId) return null;
+
   if (!name || !email || !phone) {
     return null;
   }
 
-  return await Contact.create({ name, email, phone });
+  return await Contact.create({ name, email, phone, owner: ownerId });
 };
 
-export const updateContact = async (contactId, name, email, phone) => {
-  const contact = await getContactById(contactId);
+export const updateContact = async (contactId, name, email, phone, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await getContactById(contactId, ownerId);
   if (!contact) return null;
 
   const updatedContact = await contact.update({
@@ -44,8 +61,10 @@ export const updateContact = async (contactId, name, email, phone) => {
   return updatedContact;
 };
 
-export const updateStatusContact = async (contactId, body) => {
-  const contact = await getContactById(contactId);
+export const updateStatusContact = async (contactId, body, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await getContactById(contactId, ownerId);
   if (!contact) return null;
   const updatedContact = await contact.update({ favorite: body.favorite });
 
