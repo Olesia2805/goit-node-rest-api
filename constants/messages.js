@@ -25,3 +25,5 @@ export const subscriptionOptions = ["starter", "pro", "business"];
 export const conflictExistsEmailMessageInUse =
   "Conflict: Another user already uses this email";
 export const notFoundMessage = "Not found";
+
+export const loginInvalidMessage = "Email or password is wrong";

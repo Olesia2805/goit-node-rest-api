@@ -13,7 +13,10 @@ const authRegisterControllers = async (req, res) => {
     subscription: newUser.subscription,
   });
 };
-const authLoginControllers = async (req, res) => {};
+const authLoginControllers = async (req, res) => {
+  const user = await authServices.loginUser(req.body);
+  res.status(200).json({ token: user.token });
+};
 const authLogoutControllers = async (req, res) => {};
 
 export default {
