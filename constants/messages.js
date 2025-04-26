@@ -27,3 +27,7 @@ export const conflictExistsEmailMessageInUse =
 export const notFoundMessage = "Not found";
 
 export const loginInvalidMessage = "Email or password is wrong";
+
+export const headerMissingMessage = "Authorization header is missing";
+export const bearerMissingMessage = "'Bearer' is missing";
+export const userByEmailNotFoundMessage = `User with email: '${email}' not found`;

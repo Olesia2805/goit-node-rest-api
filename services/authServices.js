@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 import User from "../db/models/User.js";
 import HttpError from "../helpers/HttpError.js";
@@ -7,6 +6,11 @@ import {
   conflictExistsEmailMessageInUse,
   loginInvalidMessage,
 } from "../constants/messages.js";
+import { generateToken } from "../helpers/jwt.js";
+
+export const findUser = (query) => {
+  return User.findOne({ where: query });
+};
 
 export const registerUser = async (userData) => {
   const { email, password } = userData;
@@ -37,9 +41,7 @@ export const loginUser = async (userData) => {
 
   const payload = { email: user.email };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  const token = generateToken(payload);
 
   return { token };
 };
