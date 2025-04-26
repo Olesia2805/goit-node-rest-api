@@ -20,13 +20,19 @@ const authRegisterControllers = async (req, res) => {
 
 const authLoginControllers = async (req, res) => {
   const user = await authServices.loginUser(req.body);
-  res.status(200).json({ token: user.token });
+  res.status(200).json({
+    token: user.token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  });
 };
 
 const authLogoutControllers = async (req, res) => {
   const { id } = req.user;
   await authServices.logoutUser(id);
-  res.json({ message: logOutSuccessfully });
+  res.sendStatus(204);
 };
 
 const authGetCurrentControllers = async (req, res) => {

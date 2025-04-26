@@ -47,7 +47,7 @@ export const loginUser = async (userData) => {
 
   await user.update({ token });
 
-  return { token };
+  return user;
 };
 
 export const logoutUser = async (userId) => {
