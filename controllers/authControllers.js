@@ -13,14 +13,23 @@ const authRegisterControllers = async (req, res) => {
     subscription: newUser.subscription,
   });
 };
+
 const authLoginControllers = async (req, res) => {
   const user = await authServices.loginUser(req.body);
   res.status(200).json({ token: user.token });
 };
+
 const authLogoutControllers = async (req, res) => {};
+
+const authGetCurrentControllers = async (req, res) => {
+  const { email } = req.user;
+
+  res.json({ email });
+};
 
 export default {
   authRegisterControllers: ctrlWrapper(authRegisterControllers),
   authLoginControllers: ctrlWrapper(authLoginControllers),
   authLogoutControllers: ctrlWrapper(authLogoutControllers),
+  authGetCurrentControllers: ctrlWrapper(authGetCurrentControllers),
 };
