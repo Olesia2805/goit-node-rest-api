@@ -18,7 +18,7 @@ authRouter.post(
   authControllers.authLoginControllers
 );
 
-authRouter.post("/logout", authControllers.authLogoutControllers);
+authRouter.post("/logout", authenticate, authControllers.authLogoutControllers);
 
 authRouter.get(
   "/current",

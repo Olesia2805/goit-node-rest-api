@@ -22,7 +22,7 @@ const authenticate = async (req, res, next) => {
     return next(HttpError(401, error.message));
   }
   const user = await findUser({ email: payload.email });
-  if (!user) {
+  if (!user || !user.token) {
     return next(HttpError(401, userByEmailNotFoundMessage));
   }
   req.user = user;

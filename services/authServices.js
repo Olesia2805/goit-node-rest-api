@@ -5,6 +5,8 @@ import HttpError from "../helpers/HttpError.js";
 import {
   conflictExistsEmailMessageInUse,
   loginInvalidMessage,
+  notFoundMessage,
+  userByEmailNotFoundMessage,
 } from "../constants/messages.js";
 import { generateToken } from "../helpers/jwt.js";
 
@@ -43,7 +45,17 @@ export const loginUser = async (userData) => {
 
   const token = generateToken(payload);
 
+  await user.update({ token });
+
   return { token };
 };
 
-export const logoutUser = async (userId) => {};
+export const logoutUser = async (userId) => {
+  const user = await findUser(userId);
+  console.log(user);
+  if (!user || !user.token) {
+    throw HttpError(401, notFoundMessage);
+  }
+
+  await user.update({ token: null });
+};

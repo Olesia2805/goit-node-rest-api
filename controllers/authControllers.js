@@ -1,7 +1,11 @@
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import * as authServices from "../services/authServices.js";
-import { conflictExistsEmailMessageInUse } from "../constants/messages.js";
+import {
+  conflictExistsEmailMessageInUse,
+  logOutSuccessfully,
+} from "../constants/messages.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const authRegisterControllers = async (req, res) => {
   const newUser = await authServices.registerUser(req.body);
@@ -19,11 +23,14 @@ const authLoginControllers = async (req, res) => {
   res.status(200).json({ token: user.token });
 };
 
-const authLogoutControllers = async (req, res) => {};
+const authLogoutControllers = async (req, res) => {
+  const { id } = req.user;
+  await authServices.logoutUser(id);
+  res.json({ message: logOutSuccessfully });
+};
 
 const authGetCurrentControllers = async (req, res) => {
   const { email } = req.user;
-
   res.json({ email });
 };
 
