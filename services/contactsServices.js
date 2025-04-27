@@ -1,9 +1,20 @@
 import Contact from "../db/models/Contact.js";
 
-export const listContacts = async (ownerId) => {
+export const listContacts = async (ownerId, favorite) => {
+  if (favorite !== undefined) {
+    if (favorite === "true") {
+      favorite = true;
+    } else if (favorite === "false") {
+      favorite = false;
+    } else {
+      favorite = undefined;
+    }
+  }
+
   const contacts = await Contact.findAll({
     where: {
       owner: ownerId,
+      ...(favorite !== undefined && { favorite: favorite }),
     },
   });
 
