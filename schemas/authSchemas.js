@@ -22,7 +22,12 @@ export const authRegisterSchema = Joi.object({
   }),
   subscription: Joi.string()
     .valid(...subscriptionOptions)
-    .default("starter"),
+    .default("starter")
+    .messages({
+      "any.only": `Subscription must be one of the following: ${subscriptionOptions.join(
+        ", "
+      )}`,
+    }),
   token: Joi.string().optional(),
 });
 
@@ -38,4 +43,14 @@ export const authLoginSchema = Joi.object({
     "string.empty": passwordEmptyMessage,
     "string.required": passwordIsRequiredMessage,
   }),
+});
+
+export const updateSubscriptionContactSchema = Joi.object({
+  subscription: Joi.string()
+    .valid(...subscriptionOptions)
+    .messages({
+      "any.only": `Subscription must be one of the following: ${subscriptionOptions.join(
+        ", "
+      )}`,
+    }),
 });

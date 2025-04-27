@@ -52,10 +52,21 @@ export const loginUser = async (userData) => {
 
 export const logoutUser = async (userId) => {
   const user = await findUser(userId);
-  console.log(user);
   if (!user || !user.token) {
-    throw HttpError(401, notFoundMessage);
+    throw HttpError(401, notAuthorizedMessage);
   }
 
   await user.update({ token: null });
+};
+
+export const updateSubscriptionUser = async (userId, subscriptionName) => {
+  if (!subscriptionName || !userId) return null;
+
+  const user = await User.findByPk(userId);
+  if (!user) {
+    throw HttpError(404, notFoundMessage);
+  }
+
+  await user.update({ subscription: subscriptionName });
+  return user;
 };

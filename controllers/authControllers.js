@@ -40,9 +40,18 @@ const authGetCurrentControllers = async (req, res) => {
   res.json({ email });
 };
 
+const updateStatusContactControllers = async (req, res) => {
+  const { id } = req.user;
+  const { subscription } = req.body;
+
+  await authServices.updateSubscriptionUser(id, subscription);
+  res.json({ subscription });
+};
+
 export default {
   authRegisterControllers: ctrlWrapper(authRegisterControllers),
   authLoginControllers: ctrlWrapper(authLoginControllers),
   authLogoutControllers: ctrlWrapper(authLogoutControllers),
   authGetCurrentControllers: ctrlWrapper(authGetCurrentControllers),
+  updateStatusContactControllers: ctrlWrapper(updateStatusContactControllers),
 };
