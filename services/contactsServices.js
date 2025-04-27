@@ -1,6 +1,8 @@
 import Contact from "../db/models/Contact.js";
 
-export const listContacts = async (ownerId, favorite) => {
+export const listContacts = async (ownerId, favorite, page, limit) => {
+  const offset = (page - 1) * limit;
+
   if (favorite !== undefined) {
     if (favorite === "true") {
       favorite = true;
@@ -16,10 +18,20 @@ export const listContacts = async (ownerId, favorite) => {
       owner: ownerId,
       ...(favorite !== undefined && { favorite: favorite }),
     },
+    limit,
+    offset,
   });
 
-  if (!contacts) return null;
-  return contacts;
+  const totalContacts = await Contact.count({
+    where: {
+      owner: ownerId,
+      ...(favorite !== undefined && { favorite: favorite }),
+    },
+  });
+
+  if (!contacts || !totalContacts) return null;
+
+  return { contacts, totalContacts };
 };
 
 export const getContactById = async (contactId, ownerId) => {

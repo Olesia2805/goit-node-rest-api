@@ -6,13 +6,30 @@ import { underscoredIf } from "sequelize/lib/utils";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
   const { id: owner } = req.user;
-  const { favorite } = req.query;
+  let { favorite, page = 1, limit = 10 } = req.query;
 
-  const data = await contactsService.listContacts(owner, favorite);
-  if (!data) {
+  page = Number(page);
+  limit = Number(limit);
+
+  if (isNaN(page) || page <= 0) page = 1;
+  if (isNaN(limit) || limit <= 0) limit = 10;
+
+  const { contacts, totalContacts } = await contactsService.listContacts(
+    owner,
+    favorite,
+    page,
+    limit
+  );
+  if (!contacts) {
     throw HttpError(404, "Contacts not found");
   }
-  res.json(data);
+  res.json({
+    page,
+    limit,
+    contacts,
+    totalContacts,
+    totalPages: Math.ceil(totalContacts / limit),
+  });
 });
 
 export const getOneContactControllers = ctrlWrapper(async (req, res) => {
