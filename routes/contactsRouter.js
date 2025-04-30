@@ -1,4 +1,5 @@
 import express from "express";
+import upload from "../middlewares/upload.js";
 import {
   getAllContactsControllers,
   getOneContactControllers,
@@ -27,6 +28,7 @@ contactsRouter.delete("/:id", deleteContactControllers);
 
 contactsRouter.post(
   "/",
+  upload.single("avatar"),
   validateBody(createContactSchema),
   createContactControllers
 );

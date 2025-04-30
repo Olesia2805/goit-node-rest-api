@@ -31,3 +31,12 @@ export const logOutSuccessfully = "You have successfully logged out";
 
 export const userByEmailNotFoundMessage = "User with this email not found";
 export const notAuthorizedMessage = "Not authorized";
+
+export const imageExtensionOptions = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "svg",
+  "tiff",
+];
