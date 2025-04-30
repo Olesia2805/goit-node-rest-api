@@ -29,8 +29,6 @@ export const listContacts = async (ownerId, favorite, page, limit) => {
     },
   });
 
-  if (!contacts || !totalContacts) return null;
-
   return { contacts, totalContacts };
 };
 

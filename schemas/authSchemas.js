@@ -28,7 +28,6 @@ export const authRegisterSchema = Joi.object({
         ", "
       )}`,
     }),
-  token: Joi.string().optional(),
 });
 
 export const authLoginSchema = Joi.object({

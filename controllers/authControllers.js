@@ -36,8 +36,8 @@ const authLogoutControllers = async (req, res) => {
 };
 
 const authGetCurrentControllers = async (req, res) => {
-  const { email } = req.user;
-  res.json({ email });
+  const { email, subscription } = req.user;
+  res.json({ email, subscription });
 };
 
 const updateStatusContactControllers = async (req, res) => {
