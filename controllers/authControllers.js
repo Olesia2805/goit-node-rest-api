@@ -8,13 +8,15 @@ import {
 import authenticate from "../middlewares/authenticate.js";
 
 const authRegisterControllers = async (req, res) => {
-  const newUser = await authServices.registerUser(req.body);
+  const newUser = await authServices.registerUser(req.body, req.file);
+
   if (!newUser) {
     throw HttpError(409, conflictExistsEmailMessageInUse);
   }
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
+    avatarURL: newUser.avatarURL,
   });
 };
 

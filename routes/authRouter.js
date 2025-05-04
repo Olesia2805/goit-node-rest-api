@@ -7,11 +7,13 @@ import {
   updateSubscriptionContactSchema,
 } from "../schemas/authSchemas.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/register",
+  upload.single("avatar"),
   validateBody(authRegisterSchema),
   authControllers.authRegisterControllers
 );

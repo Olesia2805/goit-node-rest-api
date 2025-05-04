@@ -2,7 +2,6 @@ import * as contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { notFoundMessage } from "../constants/messages.js";
-import { underscoredIf } from "sequelize/lib/utils";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
   const { id: owner } = req.user;
@@ -21,7 +20,7 @@ export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
     limit
   );
   if (!contacts) {
-    throw HttpError(404, "Contacts not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json({
     page,

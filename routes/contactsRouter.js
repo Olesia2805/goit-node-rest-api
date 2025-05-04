@@ -28,7 +28,6 @@ contactsRouter.delete("/:id", deleteContactControllers);
 
 contactsRouter.post(
   "/",
-  upload.single("avatar"),
   validateBody(createContactSchema),
   createContactControllers
 );
