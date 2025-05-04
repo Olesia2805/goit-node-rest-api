@@ -1,7 +1,4 @@
 import bcrypt from "bcrypt";
-import gravatar from "gravatar";
-import fs from "node:fs/promises";
-import path from "node:path";
 
 import User from "../db/models/User.js";
 import HttpError from "../helpers/HttpError.js";
@@ -13,14 +10,12 @@ import {
 } from "../constants/messages.js";
 import { generateToken } from "../helpers/jwt.js";
 
-const posterDir = path.resolve("public", "avatars");
-
 export const findUser = (query) => {
   return User.findOne({ where: query });
 };
 
-export const registerUser = async (userData, file) => {
-  const { email, password } = userData;
+export const registerUser = async (userData) => {
+  const { email, password, avatarURL } = userData;
   const existingUser = await User.findOne({ where: { email } });
 
   if (existingUser) {
@@ -28,13 +23,6 @@ export const registerUser = async (userData, file) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const avatarURL = file
-    ? (() => {
-        const newPath = path.join(posterDir, file.filename);
-        fs.rename(file.path, newPath);
-        return path.join("avatars", file.filename);
-      })()
-    : gravatar.url(email, { s: "250", d: "identicon" }, true);
 
   const newUser = await User.create({
     ...userData,
@@ -85,5 +73,17 @@ export const updateSubscriptionUser = async (userId, subscriptionName) => {
   }
 
   await user.update({ subscription: subscriptionName });
+  return user;
+};
+
+export const updateAvatarUser = async (userId, avatarURL) => {
+  if (!avatarURL || !userId) return null;
+
+  const user = await User.findByPk(userId);
+  if (!user) {
+    throw HttpError(404, notFoundMessage);
+  }
+
+  await user.update({ avatarURL });
   return user;
 };

@@ -1,3 +1,7 @@
+import gravatar from "gravatar";
+import fs from "node:fs/promises";
+import path from "node:path";
+
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import * as authServices from "../services/authServices.js";
@@ -5,14 +9,27 @@ import {
   conflictExistsEmailMessageInUse,
   logOutSuccessfully,
 } from "../constants/messages.js";
-import authenticate from "../middlewares/authenticate.js";
+
+const posterDir = path.resolve("public", "avatars");
 
 const authRegisterControllers = async (req, res) => {
-  const newUser = await authServices.registerUser(req.body, req.file);
+  const { file } = req;
+  const { email } = req.body;
+
+  const avatarURL = file
+    ? (() => {
+        const newPath = path.join(posterDir, file.filename);
+        fs.rename(file.path, newPath);
+        return path.join("avatars", file.filename);
+      })()
+    : gravatar.url(email, { s: "250", d: "identicon" }, true);
+
+  const newUser = await authServices.registerUser({ ...req.body, avatarURL });
 
   if (!newUser) {
     throw HttpError(409, conflictExistsEmailMessageInUse);
   }
+
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
@@ -50,10 +67,28 @@ const updateStatusContactControllers = async (req, res) => {
   res.json({ subscription });
 };
 
+const updateAvatarControllers = async (req, res) => {
+  const { id } = req.user;
+
+  if (!req.file) {
+    throw HttpError(400, "Avatar file is required");
+  }
+
+  const { path: tempUpload, filename } = req.file;
+  const avatarURL = path.join("avatars", filename);
+  const newPath = path.join(posterDir, filename);
+
+  await fs.rename(tempUpload, newPath);
+
+  await authServices.updateAvatarUser(id, avatarURL);
+  res.json({ avatarURL });
+};
+
 export default {
   authRegisterControllers: ctrlWrapper(authRegisterControllers),
   authLoginControllers: ctrlWrapper(authLoginControllers),
   authLogoutControllers: ctrlWrapper(authLogoutControllers),
   authGetCurrentControllers: ctrlWrapper(authGetCurrentControllers),
   updateStatusContactControllers: ctrlWrapper(updateStatusContactControllers),
+  updateAvatarControllers: ctrlWrapper(updateAvatarControllers),
 };
