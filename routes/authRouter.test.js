@@ -21,14 +21,6 @@ describe("test /api/auth/login", () => {
   //   },
   // });
   test("test login with correct data", async () => {
-    jest.mock("../db/models/User.js");
-    jest.mock("bcryptjs", () => ({
-      compare: jest.fn(() => true),
-    }));
-    jest.mock("jsonwebtoken", () => ({
-      sign: jest.fn(() => "mocked_token"),
-    }));
-
     const loginData = {
       email: "example@gmail.com",
       password: "your_test_password",
