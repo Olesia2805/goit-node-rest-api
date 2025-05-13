@@ -43,6 +43,21 @@ export const resendVerifyEmailUser = async (email) => {
   return user;
 };
 
+export const verifyEmailUser = async (verificationToken) => {
+  const user = await User.findOne({ where: { verificationToken } });
+
+  if (!user) {
+    throw HttpError(404, userByEmailNotFoundMessage);
+  }
+
+  await user.update({
+    verify: true,
+    verificationToken: null,
+  });
+
+  return user;
+};
+
 export const loginUser = async (userData) => {
   const { email, password } = userData;
 
