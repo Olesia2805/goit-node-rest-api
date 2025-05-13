@@ -19,6 +19,12 @@ authRouter.post(
 );
 
 authRouter.post(
+  "/verify",
+  validateBody(authVerifyEmailSchema),
+  authControllers.authVerifyEmailControllers
+);
+
+authRouter.post(
   "/login",
   validateBody(authLoginSchema),
   authControllers.authLoginControllers

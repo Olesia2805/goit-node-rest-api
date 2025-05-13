@@ -37,6 +37,27 @@ const authRegisterControllers = async (req, res) => {
   });
 };
 
+const authResendVerifyEmailControllers = async (req, res) => {
+  const { email } = req.body;
+  const user = await authServices.resendVerifyEmailUser(email);
+
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  const { verificationToken } = user;
+
+  await authServices.sendEmail({
+    to: email,
+    subject: "Verify your email",
+    html: `<a target="_blank" href="http://localhost:3000/api/auth/verify/${verificationToken}">Click to verify your email</a>`,
+  });
+
+  res.status(200).json({
+    message: "Verification email sent",
+  });
+};
+
 const authLoginControllers = async (req, res) => {
   const user = await authServices.loginUser(req.body);
   res.status(200).json({
@@ -86,6 +107,10 @@ const updateAvatarControllers = async (req, res) => {
 
 export default {
   authRegisterControllers: ctrlWrapper(authRegisterControllers),
+  authVerifyEmailControllers: ctrlWrapper(authVerifyEmailControllers),
+  authResendVerifyEmailControllers: ctrlWrapper(
+    authResendVerifyEmailControllers
+  ),
   authLoginControllers: ctrlWrapper(authLoginControllers),
   authLogoutControllers: ctrlWrapper(authLogoutControllers),
   authGetCurrentControllers: ctrlWrapper(authGetCurrentControllers),

@@ -30,6 +30,14 @@ export const authRegisterSchema = Joi.object({
     }),
 });
 
+export const authVerifyEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": emailValidationMessage,
+    "string.empty": emailNotEmptyMessage,
+    "string.required": emailIsRequiredMessage,
+  }),
+});
+
 export const authLoginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     "string.email": emailValidationMessage,

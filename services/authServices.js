@@ -33,6 +33,16 @@ export const registerUser = async (userData) => {
   return newUser;
 };
 
+export const resendVerifyEmailUser = async (email) => {
+  const user = await User.findOne({ where: { email } });
+
+  if (!user) {
+    throw HttpError(404, userByEmailNotFoundMessage);
+  }
+
+  return user;
+};
+
 export const loginUser = async (userData) => {
   const { email, password } = userData;
 
