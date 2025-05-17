@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
 
 import User from "../db/models/User.js";
 import HttpError from "../helpers/HttpError.js";
@@ -9,6 +10,17 @@ import {
   userByEmailNotFoundMessage,
 } from "../constants/messages.js";
 import { generateToken } from "../helpers/jwt.js";
+import sendEmail from "../helpers/sendEmail.js";
+
+const APP_URL = process.env.APP_URL || "http://localhost:3000";
+
+const createVerificationEmail = (email, verificationToken) => {
+  return {
+    to: email,
+    subject: "Verify your email",
+    html: `<a target="_blank" href="${APP_URL}/api/auth/verify/${verificationToken}">Click to verify your email</a>`,
+  };
+};
 
 export const findUser = (query) => {
   return User.findOne({ where: query });
@@ -24,11 +36,22 @@ export const registerUser = async (userData) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const verificationToken = nanoid();
+
   const newUser = await User.create({
     ...userData,
     password: hashedPassword,
     avatarURL,
+    verificationToken,
   });
+
+  if (newUser.verificationToken) {
+    const emailData = createVerificationEmail(
+      newUser.email,
+      newUser.verificationToken
+    );
+    await sendEmail(emailData);
+  }
 
   return newUser;
 };
@@ -38,6 +61,10 @@ export const resendVerifyEmailUser = async (email) => {
 
   if (!user) {
     throw HttpError(404, userByEmailNotFoundMessage);
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
   }
 
   return user;

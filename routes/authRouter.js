@@ -5,6 +5,7 @@ import {
   authRegisterSchema,
   authLoginSchema,
   updateSubscriptionContactSchema,
+  authVerifyEmailSchema,
 } from "../schemas/authSchemas.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";

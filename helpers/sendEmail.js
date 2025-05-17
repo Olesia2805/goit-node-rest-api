@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 const nodemailerConfig = {
-  host: "smpt.ukr.net",
+  host: "smtp.ukr.net",
   port: 465,
   secure: true,
   auth: {

@@ -37,6 +37,7 @@ const authRegisterControllers = async (req, res) => {
   });
 };
 
+//TODO
 const authResendVerifyEmailControllers = async (req, res) => {
   const { email } = req.body;
   const user = await authServices.resendVerifyEmailUser(email);
@@ -47,11 +48,8 @@ const authResendVerifyEmailControllers = async (req, res) => {
 
   const { verificationToken } = user;
 
-  await authServices.sendEmail({
-    to: email,
-    subject: "Verify your email",
-    html: `<a target="_blank" href="http://localhost:3000/api/auth/verify/${verificationToken}">Click to verify your email</a>`,
-  });
+  // const emailData = createVerificationEmail(email, verificationToken);
+  // await sendEmail(emailData);
 
   res.status(200).json({
     message: "Verification email sent",
