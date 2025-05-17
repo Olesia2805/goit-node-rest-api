@@ -7,7 +7,10 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import * as authServices from "../services/authServices.js";
 import {
   conflictExistsEmailMessageInUse,
-  logOutSuccessfully,
+  notFoundMessage,
+  verificationSuccessfulMessage,
+  verificationEmailSentMessage,
+  avatarFileIsRequiredMessage,
 } from "../constants/messages.js";
 
 const posterDir = path.resolve("public", "avatars");
@@ -42,30 +45,24 @@ const authVerifyEmailControllers = async (req, res) => {
   const user = await authServices.verifyEmailUser(verificationToken);
 
   if (!user) {
-    throw HttpError(404, "User not found");
+    throw HttpError(404, notFoundMessage);
   }
 
   res.status(200).json({
-    message: "Verification successful",
+    message: verificationSuccessfulMessage,
   });
 };
 
-//TODO
 const authResendVerifyEmailControllers = async (req, res) => {
   const { email } = req.body;
   const user = await authServices.resendVerifyEmailUser(email);
 
   if (!user) {
-    throw HttpError(404, "User not found");
+    throw HttpError(404, notFoundMessage);
   }
 
-  // const { verificationToken } = user;
-
-  // const emailData = createVerificationEmail(email, verificationToken);
-  // await sendEmail(emailData);
-
   res.status(200).json({
-    message: "Verification email sent",
+    message: verificationEmailSentMessage,
   });
 };
 
@@ -103,7 +100,7 @@ const updateAvatarControllers = async (req, res) => {
   const { id } = req.user;
 
   if (!req.file) {
-    throw HttpError(400, "Avatar file is required");
+    throw HttpError(400, avatarFileIsRequiredMessage);
   }
 
   const { path: tempUpload, filename } = req.file;

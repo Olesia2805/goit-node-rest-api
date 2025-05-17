@@ -13,13 +13,6 @@ describe("test /api/auth/login", () => {
     await server.close();
   });
 
-  // res.status(200).json({
-  //   token: user.token,
-  //   user: {
-  //     email: user.email,
-  //     subscription: user.subscription,
-  //   },
-  // });
   test("test login with correct data", async () => {
     const loginData = {
       email: "example@gmail.com",

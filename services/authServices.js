@@ -8,6 +8,8 @@ import {
   loginInvalidMessage,
   notFoundMessage,
   userNotFoundOrVerifiedMessage,
+  verificationAlreadyPassedMessage,
+  emailIsNotVerifiedMessage,
 } from "../constants/messages.js";
 import { generateToken } from "../helpers/jwt.js";
 import sendEmail from "../helpers/sendEmail.js";
@@ -79,7 +81,7 @@ export const resendVerifyEmailUser = async (email) => {
   }
 
   if (user.verify) {
-    throw HttpError(400, "Verification has already been passed");
+    throw HttpError(400, verificationAlreadyPassedMessage);
   }
 
   const emailData = createVerificationEmail(email, user.verificationToken);
@@ -98,7 +100,7 @@ export const loginUser = async (userData) => {
   }
 
   if (!user.verify) {
-    throw HttpError(401, "Email not verified");
+    throw HttpError(401, emailIsNotVerifiedMessage);
   }
 
   const validPassword = await bcrypt.compare(password, user.password);

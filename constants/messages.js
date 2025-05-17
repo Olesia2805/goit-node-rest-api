@@ -27,7 +27,6 @@ export const conflictExistsEmailMessageInUse =
 export const notFoundMessage = "Not found";
 
 export const loginInvalidMessage = "Email or password is wrong";
-export const logOutSuccessfully = "You have successfully logged out";
 
 export const userByEmailNotFoundMessage = "User with this email not found";
 export const notAuthorizedMessage = "Not authorized";
@@ -41,5 +40,12 @@ export const imageExtensionOptions = [
   "tiff",
 ];
 
+export const avatarFileIsRequiredMessage = "Avatar file is required";
+
 export const userNotFoundOrVerifiedMessage =
   "User not found or already verified";
+export const verificationSuccessfulMessage = "Verification successful";
+export const verificationEmailSentMessage = "Verification email sent";
+export const verificationAlreadyPassedMessage =
+  "Verification has already been passed";
+export const emailIsNotVerifiedMessage = "Email is not verified";
