@@ -59,7 +59,7 @@ const authResendVerifyEmailControllers = async (req, res) => {
     throw HttpError(404, "User not found");
   }
 
-  const { verificationToken } = user;
+  // const { verificationToken } = user;
 
   // const emailData = createVerificationEmail(email, verificationToken);
   // await sendEmail(emailData);

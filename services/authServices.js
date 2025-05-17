@@ -71,20 +71,23 @@ export const verifyEmailUser = async (verificationToken) => {
   return user;
 };
 
-//TODO
-// export const resendVerifyEmailUser = async (email) => {
-//   const user = await User.findOne({ where: { email } });
+export const resendVerifyEmailUser = async (email) => {
+  const user = await findUser({ email });
 
-//   if (!user) {
-//     throw HttpError(404, userByEmailNotFoundMessage);
-//   }
+  if (!user) {
+    throw HttpError(404, notFoundMessage);
+  }
 
-//   if (user.verify) {
-//     throw HttpError(400, "Verification has already been passed");
-//   }
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
 
-//   return user;
-// };
+  const emailData = createVerificationEmail(email, user.verificationToken);
+
+  await sendEmail(emailData);
+
+  return user;
+};
 
 export const loginUser = async (userData) => {
   const { email, password } = userData;

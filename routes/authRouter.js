@@ -27,7 +27,7 @@ authRouter.get(
 authRouter.post(
   "/verify",
   validateBody(authVerifyEmailSchema),
-  authControllers.authVerifyEmailControllers
+  authControllers.authResendVerifyEmailControllers
 );
 
 authRouter.post(
