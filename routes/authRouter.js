@@ -19,14 +19,14 @@ authRouter.post(
   authControllers.authRegisterControllers
 );
 
-authRouter.post(
-  "/verify",
-  validateBody(authVerifyEmailSchema),
+authRouter.get(
+  "/verify/:verificationToken",
   authControllers.authVerifyEmailControllers
 );
 
-authRouter.get(
-  "/verify/:verificationToken",
+authRouter.post(
+  "/verify",
+  validateBody(authVerifyEmailSchema),
   authControllers.authVerifyEmailControllers
 );
 

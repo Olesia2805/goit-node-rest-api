@@ -40,3 +40,6 @@ export const imageExtensionOptions = [
   "svg",
   "tiff",
 ];
+
+export const userNotFoundOrVerifiedMessage =
+  "User not found or already verified";

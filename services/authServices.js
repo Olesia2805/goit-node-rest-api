@@ -7,7 +7,7 @@ import {
   conflictExistsEmailMessageInUse,
   loginInvalidMessage,
   notFoundMessage,
-  userByEmailNotFoundMessage,
+  userNotFoundOrVerifiedMessage,
 } from "../constants/messages.js";
 import { generateToken } from "../helpers/jwt.js";
 import sendEmail from "../helpers/sendEmail.js";
@@ -56,25 +56,11 @@ export const registerUser = async (userData) => {
   return newUser;
 };
 
-export const resendVerifyEmailUser = async (email) => {
-  const user = await User.findOne({ where: { email } });
-
-  if (!user) {
-    throw HttpError(404, userByEmailNotFoundMessage);
-  }
-
-  if (user.verify) {
-    throw HttpError(400, "Verification has already been passed");
-  }
-
-  return user;
-};
-
 export const verifyEmailUser = async (verificationToken) => {
-  const user = await User.findOne({ where: { verificationToken } });
+  const user = await findUser({ verificationToken });
 
   if (!user) {
-    throw HttpError(404, userByEmailNotFoundMessage);
+    throw HttpError(404, userNotFoundOrVerifiedMessage);
   }
 
   await user.update({
@@ -85,12 +71,31 @@ export const verifyEmailUser = async (verificationToken) => {
   return user;
 };
 
+//TODO
+// export const resendVerifyEmailUser = async (email) => {
+//   const user = await User.findOne({ where: { email } });
+
+//   if (!user) {
+//     throw HttpError(404, userByEmailNotFoundMessage);
+//   }
+
+//   if (user.verify) {
+//     throw HttpError(400, "Verification has already been passed");
+//   }
+
+//   return user;
+// };
+
 export const loginUser = async (userData) => {
   const { email, password } = userData;
 
   const user = await User.findOne({ where: { email } });
   if (!user) {
     throw HttpError(401, loginInvalidMessage);
+  }
+
+  if (!user.verify) {
+    throw HttpError(401, "Email not verified");
   }
 
   const validPassword = await bcrypt.compare(password, user.password);
