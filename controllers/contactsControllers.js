@@ -1,50 +1,97 @@
-import contactsService from "../services/contactsServices.js";
+import * as contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import { createContactSchema } from "../schemas/contactsSchemas.js";
-import validateBody from "../helpers/validateBody.js";
+import { notFoundMessage } from "../constants/messages.js";
 
 export const getAllContactsControllers = ctrlWrapper(async (req, res) => {
-  const data = await contactsService.listContacts();
-  if (!data) {
-    throw HttpError(404, "Contacts not found");
+  const { id: owner } = req.user;
+  let { favorite, page = 1, limit = 10 } = req.query;
+
+  page = Number(page);
+  limit = Number(limit);
+
+  if (isNaN(page) || page <= 0) page = 1;
+  if (isNaN(limit) || limit <= 0) limit = 10;
+
+  const { contacts, totalContacts } = await contactsService.listContacts(
+    owner,
+    favorite,
+    page,
+    limit
+  );
+  if (!contacts) {
+    throw HttpError(404, notFoundMessage);
   }
-  res.json(data);
+  res.json({
+    page,
+    limit,
+    contacts,
+    totalContacts,
+    totalPages: Math.ceil(totalContacts / limit),
+  });
 });
 
 export const getOneContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
-  const data = await contactsService.getContactById(id);
+  const data = await contactsService.getContactById(id, owner);
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
 
 export const deleteContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
-  const data = await contactsService.removeContact(id);
+  const data = await contactsService.removeContact(id, owner);
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });
 
 export const createContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { name, email, phone } = req.body;
-  const data = await contactsService.addContact(name, email, phone);
+  const data = await contactsService.addContact(name, email, phone, owner);
   res.status(201).json(data);
 });
 
 export const updateContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
   const { id } = req.params;
   const { name, email, phone } = req.body;
   if (!name && !email && !phone) {
     throw HttpError(400, "Body must have at least one field");
   }
-  const data = await contactsService.updateContact(id, name, email, phone);
+  const data = await contactsService.updateContact(
+    id,
+    name,
+    email,
+    phone,
+    owner
+  );
   if (!data) {
-    throw HttpError(404, "Not found");
+    throw HttpError(404, notFoundMessage);
+  }
+  res.json(data);
+});
+
+export const updateStatusContactControllers = ctrlWrapper(async (req, res) => {
+  const { id: owner } = req.user;
+  const { id } = req.params;
+  const { favorite } = req.body;
+  if (favorite === undefined) {
+    throw HttpError(400, "missing field favorite");
+  }
+  const data = await contactsService.updateStatusContact(
+    id,
+    { favorite },
+    owner
+  );
+  if (!data) {
+    throw HttpError(404, notFoundMessage);
   }
   res.json(data);
 });

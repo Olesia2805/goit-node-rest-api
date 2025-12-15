@@ -1,97 +1,93 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { nanoid } from "nanoid";
+import Contact from "../db/models/Contact.js";
 
-const contactsPath = path.resolve("db", "contacts.json");
-const updateContactsData = (contacts) =>
-  fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+export const listContacts = async (ownerId, favorite, page, limit) => {
+  const offset = (page - 1) * limit;
 
-async function listContacts() {
-  try {
-    const allContacts = await fs.readFile(contactsPath, "utf-8");
-
-    const parsed = JSON.parse(allContacts);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    return null;
-  }
-}
-
-async function getContactById(contactId) {
-  const allContacts = await listContacts();
-
-  const contact = allContacts.find((item) => item.id === contactId);
-
-  return contact || null;
-}
-
-async function removeContact(contactId) {
-  const allContacts = await listContacts();
-  const index = allContacts.findIndex((item) => item.id === contactId);
-
-  if (index === -1) {
-    return null;
+  if (favorite !== undefined) {
+    if (favorite === "true") {
+      favorite = true;
+    } else if (favorite === "false") {
+      favorite = false;
+    } else {
+      favorite = undefined;
+    }
   }
 
-  const [removedContact] = allContacts.splice(index, 1);
+  const contacts = await Contact.findAll({
+    where: {
+      owner: ownerId,
+      ...(favorite !== undefined && { favorite: favorite }),
+    },
+    limit,
+    offset,
+  });
 
-  await updateContactsData(allContacts);
+  const totalContacts = await Contact.count({
+    where: {
+      owner: ownerId,
+      ...(favorite !== undefined && { favorite: favorite }),
+    },
+  });
 
-  return removedContact;
-}
+  return { contacts, totalContacts };
+};
 
-async function addContact(name, email, phone) {
+export const getContactById = async (contactId, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await Contact.findOne({
+    where: {
+      id: contactId,
+      owner: ownerId,
+    },
+  });
+  if (!contact) return null;
+
+  return contact;
+};
+
+export const removeContact = async (contactId, ownerId) => {
+  if (!ownerId || !contactId) return null;
+
+  const contact = await getContactById(contactId, ownerId);
+  if (!contact) return null;
+
+  await contact.destroy();
+
+  return contact;
+};
+
+export const addContact = async (name, email, phone, ownerId) => {
+  if (!ownerId) return null;
+
   if (!name || !email || !phone) {
     return null;
   }
 
-  const allContacts = await listContacts();
+  return await Contact.create({ name, email, phone, owner: ownerId });
+};
 
-  const newContact = {
-    id: nanoid(),
-    name,
-    email,
-    phone,
-  };
+export const updateContact = async (contactId, name, email, phone, ownerId) => {
+  if (!ownerId || !contactId) return null;
 
-  allContacts.push(newContact);
+  const contact = await getContactById(contactId, ownerId);
+  if (!contact) return null;
 
-  await updateContactsData(allContacts);
-
-  return newContact;
-}
-
-async function updateContact(contactId, name, email, phone) {
-  if (!name && !email && !phone) {
-    return null;
-  }
-
-  const allContacts = await listContacts();
-
-  const index = allContacts.findIndex((item) => item.id === contactId);
-
-  if (index === -1) {
-    return null;
-  }
-
-  const updatedContactFields = {
-    ...allContacts[index],
+  const updatedContact = await contact.update({
     ...(name && { name }),
     ...(email && { email }),
     ...(phone && { phone }),
-  };
+  });
 
-  allContacts[index] = updatedContactFields;
+  return updatedContact;
+};
 
-  await updateContactsData(allContacts);
+export const updateStatusContact = async (contactId, body, ownerId) => {
+  if (!ownerId || !contactId) return null;
 
-  return updatedContactFields;
-}
+  const contact = await getContactById(contactId, ownerId);
+  if (!contact) return null;
+  const updatedContact = await contact.update({ favorite: body.favorite });
 
-export default {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
+  return updatedContact;
 };
